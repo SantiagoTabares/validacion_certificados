@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 
 # Abrir el archivo PDF en modo lectura binaria
-archivo_pdf = open("..\ejemSSFF.pdf", 'rb')  
+archivo_pdf = open("..\ejemCARSO.pdf", 'rb')  
 
 iden_ssff = ('Hace constar que' and 'ha completado el curso')
 iden_carso = ('para acreditar que' and 'completó y aprobó los estudios de')
@@ -16,6 +16,58 @@ cursos_obligatorios = ['Protección de datos personales', 'Código de Conducta',
                        'Programa SSTA 2022', 'CURSOS UCC', 'Curso ET', 
                        'Reinducción 2023', 'Código de Conducta Local - Comcel', 'Experiencia al Colaborador ', 'Plan Maestro',
                        'Agilidad 2.0', 'Decálogo del Líder Ágil' , 'Comunicar es la Onda']                     
+
+def buscar_en_pdf(texto_pag, inicio, final):
+    if isinstance(inicio, int) :
+        index_inicio = inicio
+    else:
+        index_inicio = texto_pag.find(inicio) + len(inicio)
+
+    if isinstance(final, int) :
+        index_final = final
+    else:
+        index_final = texto_pag.find(final) 
+
+    return texto_pag[index_inicio:index_final]
+
+
+def SSFF(texto_pag):
+    #Nombre certificado
+    inicio_nombre = 'constar que'
+    final_nombre = 'ha completado'
+    nombre_certificado = buscar_en_pdf(texto_pag, inicio_nombre, final_nombre)
+
+    #Fecha
+    inicio_fecha = -10
+    final_fecha = -1
+    fecha_certificado = buscar_en_pdf(texto_pag, inicio_fecha, final_fecha)
+    #Certificado
+
+    inicio_certificado = 'el curso'
+    index_final_certificado  = inicio_fecha
+    certificado = buscar_en_pdf(texto_pag, inicio_certificado,index_final_certificado )
+
+    return nombre_certificado, certificado,  fecha_certificado 
+
+def CARSO(texto_pag):
+    #Nombre certificado
+    inicio_nombre = 'acreditar que'
+    final_nombre = 'completó y '
+
+    nombre_certificado = buscar_en_pdf(texto_pag, inicio_nombre, final_nombre)
+
+    #Fecha
+    inicio_fecha = 'México a '
+    final_fecha = 'Certificado de '
+    fecha_certificado = buscar_en_pdf(texto_pag, inicio_fecha, final_fecha)
+    #Certificado
+
+    inicio_certificado = 'estudios de'
+    index_final_certificado  = 'presentando a la '
+    certificado = buscar_en_pdf(texto_pag, inicio_certificado,index_final_certificado )
+
+    return nombre_certificado, certificado,  fecha_certificado 
+
 
 # Crear un objeto de la clase PdfFileReader 
 pdf_reader = PyPDF2.PdfFileReader(archivo_pdf)
@@ -35,33 +87,13 @@ print(texto_pag)
 
 if iden_ssff in texto_pag:
     print("Es SSFF")
+    a, b, c = SSFF(texto_pag)
+    print(a, b, c)
 
-    #Nombre certificado
-    inicio_nombre = 'constar que'
-    final_nombre = 'ha completado'
-    index_inicio_nombre = texto_pag.find(inicio_nombre) + len(inicio_nombre)
-    index_final_nombre = texto_pag.find(final_nombre)
-    nombre_certificado = texto_pag[index_inicio_nombre:index_final_nombre]
-    print(nombre_certificado)
-
-    #Fecha
-    inicio_fecha = -10
-    fecha_certificado =texto_pag[inicio_fecha:-1]
-    print(fecha_certificado)
-
-
-    #Certificado
-
-    inicio_certificado = 'el curso'
-    index_inicio_certificado = texto_pag.find(inicio_certificado) +len(inicio_certificado)
-
-    index_final_certificado  = inicio_fecha
-
-    certificado = texto_pag[index_inicio_certificado:index_final_certificado] 
-    print(certificado)
-   
 elif iden_carso in texto_pag :
     print("Es CARSO")
+    a, b, c = CARSO(texto_pag)
+    print(a, b, c)
 elif iden_uclaro in texto_pag :
     print("Es Universidad Claro")
 elif iden_coursera in texto_pag :
