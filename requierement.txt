@@ -3,3 +3,6 @@ pandas
 openpyxl
 selenium
 pycryptodome
+datetime
+locale
+dateutil.parser
