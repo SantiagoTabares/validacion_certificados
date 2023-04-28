@@ -39,7 +39,7 @@ def extraer_informacion(dir_pdf):
     pdf_reader = PyPDF2.PdfFileReader(archivo_pdf)
     pagina = pdf_reader.getPage(0)
     texto_pag = pagina.extractText()
-    
+    print(texto_pag)
     plataforma = "sin identificar"
     
     ## la clave representa la plataforma donde se hizo el certificado
@@ -98,7 +98,6 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     return nombre,certificado, fechaConFormato, aprobado, talentos
 
 
-
 def buscar_en_pdf(texto_pag, inicio, final):
     
     if isinstance(inicio, int) : index_inicio = inicio
@@ -140,9 +139,9 @@ if __name__ == '__main__':
     dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
     #dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
-    pdf ="178708f8-b115-4bd1-af0e-9d713e590936.pdf"
+    pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf"
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
-    print(talentos)
+    print(certificado)
 
 
 
