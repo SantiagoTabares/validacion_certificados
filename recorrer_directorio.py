@@ -13,7 +13,8 @@ else:
     print("Se ha creado el archivo 'certificados_validados.xlsx'.")
     
 
-directorio = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro"  
+#directorio = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro"  # Directorio Miguel
+directorio = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"           # Directorio Santigo
 lis = []
 var =0
 listaDocumentosRaros = [];
@@ -27,12 +28,12 @@ for archivo in os.listdir(directorio):
     if os.path.isfile(ruta_archivo):
         try:
             ##se valida si hay algún archivo repetido
-            # if (not df['id_pdf'].isin([archivo]).any()):
+            if (not df['id_pdf'].isin([archivo]).any()):
                 ##se extrae la información del certificado
                 nombre, certificado, fecha, plataforma, aprobado, talentos = clasificador_pdfs.extraer_informacion("{}/{}".format(directorio,archivo))
                 ##se crea un nuevo registro a partir de la información
                 nuevo_valor = pd.DataFrame({"id_pdf":[archivo], "empleado":[nombre],"certificado":[certificado],
-                                            "fecha":[fecha], "plataforma":[plataforma], "aprobado":[None], "talentos":[None]})
+                                            "fecha":[fecha], "plataforma":[plataforma], "aprobado":[aprobado], "talentos":[talentos]})
                 ##se guarda el registro en el objeto df
                 df = pd.concat([df,nuevo_valor] )    
                 

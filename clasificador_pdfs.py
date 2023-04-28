@@ -7,15 +7,6 @@ from dateutil.parser import parse
 # # Abrir el archivo PDF en modo lectura binaria
 # archivo_pdf = open("..\ejemUClaro.pdf", 'rb')  
 
-# cursos_obligatorios = ['Protección de datos personales', 'Código de Conducta', 'Curso UCC', 'Curso Habilidades UCC',
-#                        'Ransomware', 'Incapacidades','Lavado de Dinero', 'Convivencia Saludable', 'Curso UCC','Curso Habilidades UCC',
-#                        'Introducción a la Seguridad de la Información 2022 - Carso', 'Agilidad', 'Igualdad y Equidad de Género', 'Curso UCC','Curso ET',
-#                        'Programa SSTA 2022', 'CURSOS UCC', 'Curso ET', 
-#                        'Reinducción 2023', 'Código de Conducta Local - Comcel', 'Experiencia al Colaborador ', 'Plan Maestro',
-#                        'Agilidad 2.0', 'Decálogo del Líder Ágil' , 'Comunicar es la Onda']                     
-
-
-
 def extraer_informacion(dir_pdf):
     
     archivo_pdf = open(dir_pdf, 'rb') 
@@ -64,6 +55,18 @@ def extraer_informacion(dir_pdf):
     
     return nombre, certificado, fecha, plataforma, aprobado, talentos
 
+def aprobar_pdf(fecha ,fechaLimite , certificado):
+    cursos_obligatorios = ['Protección de datos personales', 'Código de Conducta', 'Curso UCC', 'Curso Habilidades UCC',
+                        'Ransomware', 'Incapacidades','Lavado de Dinero', 'Convivencia Saludable', 'Curso UCC','Curso Habilidades UCC',
+                        'Introducción a la Seguridad de la Información 2022 - Carso', 'Agilidad', 'Igualdad y Equidad de Género', 'Curso UCC','Curso ET',
+                        'Programa SSTA 2022', 'CURSOS UCC', 'Curso ET', 
+                        'Reinducción 2023', 'Código de Conducta Local - Comcel', 'Experiencia al Colaborador ', 'Plan Maestro',
+                        'Agilidad 2.0', 'Decálogo del Líder Ágil' , 'Comunicar es la Onda']
+    
+    fecha_aceptada = fechaLimite < fecha
+    return fecha_aceptada and certificado not in  cursos_obligatorios
+
+    
 
 def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     
@@ -82,9 +85,18 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     fechaLimite = parse("01/04/2022", dayfirst=True)
     fechaLimite = fechaLimite.strftime("%d/%m/%Y")
 
-    aprobado = fechaLimite < fechaConFormato
     
-    return nombre,certificado, fechaConFormato, aprobado,None
+    aprobado = aprobar_pdf(fechaConFormato ,fechaLimite , certificado)
+
+    talentos_plataforma = {"ssff":5, "carso": 10, "uclaro": 5, "coursera":20}
+
+    if aprobado: 
+        talentos = talentos_plataforma[plataforma]
+    else: 
+        talentos = 0
+
+    return nombre,certificado, fechaConFormato, aprobado, talentos
+
 
 
 def buscar_en_pdf(texto_pag, inicio, final):
@@ -125,11 +137,13 @@ def formatearFecha(fechaSinFormato, plataforma):
 
 
 if __name__ == '__main__':    
-    var1 = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro"  
-    var2 ="178708f8-b115-4bd1-af0e-9d713e590936.pdf"
-    x = "{}/{}".format(var1,var2)
-    nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion(x)
-    print(fecha)
+    dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
+    #dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
+
+    pdf ="178708f8-b115-4bd1-af0e-9d713e590936.pdf"
+    nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
+    print(talentos)
+
 
 
 
