@@ -9,14 +9,17 @@ cnx = psycopg2.connect(user='postgres', password='STMun#20',
                        host='localhost', port='5433', database='Certificates')
 cursor = cnx.cursor()
 
+# Crear un archivo de texto para guardar las consultas
+file = open("consultas.txt", "w")
+
 # Iterar a través de cada fila del dataframe y agregarlas a la tabla de PostgreSQL
 # id_pdf	empleado	certificado	fecha	plataforma	aprobado	talentos
 
 for i, row in df.iterrows():
     # id = row['id_pdf']
-    name = row['empleado']
+    #name = row['empleado']
     date = row['fecha']
-    doc_url = row['id_pdf']
+    doc_url = row['id_pdf'] 
     approved = bool(row['aprobado'])
     points = row['talentos']
     # remarks = row['Remarks']
@@ -31,12 +34,14 @@ for i, row in df.iterrows():
     
     if result:
         # Si ya existe una fila con el mismo id, actualizar los valores de la fila
-        query = ("UPDATE certificates SET Name = %s, Date = %s, "
+        query = ("UPDATE certificates SET  Date = %s, "
                  "Approved = %s, Points = %s, "
                  "Rejected = %s, Platform = %s WHERE DocumentUrl = %s")
-        values = (name, date,  approved, points,
+        values = (date,  approved, points,
                   rejected, platform, doc_url)
         cursor.execute(query, values)
+        # Guardar la consulta en el archivo de texto
+        file.write(cursor.mogrify(query, values).decode('utf-8')+ ";\n")
     # else:
         # Si no existe una fila con el mismo id, insertar una nueva fila
         # query = ("INSERT INTO certificates (id, Name, Date, DocumentUrl, Approved, "
