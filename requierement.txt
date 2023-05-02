@@ -6,3 +6,8 @@ pycryptodome
 datetime
 locale
 dateutil.parser
+mysql.connector
+pytesseract
+Pillow
+tesseract
+pdf2image

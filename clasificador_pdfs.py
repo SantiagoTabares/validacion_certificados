@@ -2,6 +2,7 @@ import PyPDF2
 import re
 import datetime
 import locale
+import lectorImagenes
 from dateutil.parser import parse
 
 # # Abrir el archivo PDF en modo lectura binaria
@@ -32,14 +33,20 @@ def extraer_informacion(dir_pdf):
                                  "inicioCertificado" :'por el curso',
                                  "finalCertificado": 'Fecha'}
     
-    formatos_cursos["coursera"] = {"inicioNombre": 'ofrecido a través de Courseracompletó con éxito' ,
+    formatos_cursos["coursera"] = {"inicioNombre": 'ofrecido a través de Coursera completó con éxito' ,
                                    "finalNombre": 'Coursera confirmó la identidad de esta persona'}
     
     
     pdf_reader = PyPDF2.PdfFileReader(archivo_pdf)
     pagina = pdf_reader.getPage(0)
     texto_pag = pagina.extractText()
-    print(texto_pag)
+    
+    ##Identifica si del pdf leyó algo
+    if texto_pag.strip() == "":
+       #El string está vacío o está compuesto sólo por espacios, es probable que sea una imagen
+        print("imagen")
+        texto_pag = lectorImagenes.PdfImagenATexto(dir_pdf)
+    
     plataforma = "sin identificar"
     
     ## la clave representa la plataforma donde se hizo el certificado
@@ -54,6 +61,8 @@ def extraer_informacion(dir_pdf):
         nombre, certificado, fecha, aprobado, talentos = buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos)
     
     return nombre, certificado, fecha, plataforma, aprobado, talentos
+
+
 
 def aprobar_pdf(fecha ,fechaLimite , certificado):
     cursos_obligatorios = ['Protección de datos personales', 'Código de Conducta', 'Curso UCC', 'Curso Habilidades UCC',
@@ -86,7 +95,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     fechaLimite = fechaLimite.strftime("%d/%m/%Y")
 
     
-    aprobado = aprobar_pdf(fechaConFormato ,fechaLimite , certificado)
+    aprobado = aprobar_pdf(fechaConFormato, fechaLimite, certificado)
 
     talentos_plataforma = {"ssff":5, "carso": 10, "uclaro": 5, "coursera":20}
 
@@ -136,10 +145,11 @@ def formatearFecha(fechaSinFormato, plataforma):
 
 
 if __name__ == '__main__':    
-    dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
-    #dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
+    # dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
+    dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
-    pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf"
+    # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
+    pdf ="17ad4720-adc2-4ef9-9bf1-daab3d103696.pdf"
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
     print(certificado)
 
