@@ -1,0 +1,25 @@
+
+CREATE TABLE Certificates (
+    id SERIAL PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Date DATE NOT NULL,
+    DocumentUrl VARCHAR(255) NOT NULL,
+    Approved BOOLEAN NOT NULL DEFAULT false,
+    Points INT NOT NULL DEFAULT 0,
+    Remarks TEXT,
+    Employeeld INT NOT NULL,
+    Rejected BOOLEAN NOT NULL DEFAULT false,
+    Platform VARCHAR(255) NOT NULL
+);
+
+INSERT INTO Certificates (Name, Date, DocumentUrl, Approved, Points, Remarks, Employeeld, Rejected, Platform)
+VALUES ('DILIO ALFREDO BELTRAN HUERTAS', '2023-05-01', '00074b1a-1b56-4ade-9c6c-4a110a25b785.pdf', 0, 0, NULL, 1, 0, 'Platform A'),
+('EDUARDO PARRALES DANIEL', '2023-05-02', '00102d10-8707-4f03-b1bb-c24c7aca2b5f.pdf', 0, 0, NULL, 2, 0, 'Platform B'),
+('RUTH MILENA FLOREZ', '2023-05-03', '001585dd-3367-4c48-a65d-2d9907adcea7.pdf', 0, 0, NULL, 3, 0, 'Platform C'),
+('LIZETH PATRICIA VERGARA TORRES', '2023-05-04', '0019d673-4cbe-4d09-a875-2899f5354dcc.pdf', 0, 0, NULL, 4, 0, 'Platform A'),
+('ALEXANDRA VARGAS GOMEZ', '2023-05-05', '0041e20a-d375-421c-a3da-2198453240bd.pdf', 0, 0, NULL, 5, 0, 'Platform B'),
+('GIOVANNY ERNESTO ROA PEREA', '2023-05-06', '0047f9dc-a955-44d9-b2ea-393c634282e6.pdf', 0, 0, NULL, 6, 0, 'Platform C'),
+('ALFONSO JOSE VASQUEZ GOMEZ', '2023-05-07', '005cf72c-dbbd-442f-8eaf-222178cad571.pdf', 0, 0, NULL, 7, 0, 'Platform A'),
+('GIOVANNY ERNESTO ROA PEREA', '2023-05-08', '006fedd1-3d70-4f5b-8e4e-cded1e9984c7.pdf', 0, 0, NULL, 8, 0, 'Platform B'),
+('HENRY YEZID PORRAS GRACIA', '2023-05-09', '0085d795-70f1-4132-8664-593dfeb83509.pdf', 0, 0, NULL, 9, 0, 'Platform C'),
+('LINA MARIA SANDOVAL MONTAÑO', '2023-05-10', '008de499-f211-49f3-825c-8769eedc94fd.pdf', 0, 0, NULL, 10, 0, 'Platform A');

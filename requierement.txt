@@ -6,3 +6,4 @@ pycryptodome
 datetime
 locale
 dateutil.parser
+psycopg2    
