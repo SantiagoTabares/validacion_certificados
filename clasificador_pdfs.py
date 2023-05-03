@@ -15,7 +15,7 @@ def extraer_informacion(dir_pdf):
 
     formatos_cursos = {}
     formatos_cursos = {}
-    formatos_cursos["ssff"] = { "palabraClave": 'Hace constar que',
+    formatos_cursos["SucessFactors"] = { "palabraClave": 'Hace constar que',
                                 "inicioNombre":'Hace constar que', 
                                 "finalNombre":'ha completado el curso',
                                 "inicioFecha": -10, 
@@ -23,7 +23,7 @@ def extraer_informacion(dir_pdf):
                                 "inicioCertificado": 'el curso', 
                                 "finalCertificado": -10}
     
-    formatos_cursos["carso"] = {"palabraClave": 'para acreditar que',
+    formatos_cursos["Capacitate Carso"] = {"palabraClave": 'para acreditar que',
                                 "inicioNombre": 'para acreditar que' ,
                                 "finalNombre": 'completó y aprobó los estudios de',
                                 "inicioFecha" : 'México a ',
@@ -38,13 +38,13 @@ def extraer_informacion(dir_pdf):
                                 "inicioCertificado" :'por el curso',
                                 "finalCertificado": 'Fecha'}
     
-    formatos_cursos["coursera"] = { "palabraClave": 'coursera',
+    formatos_cursos["Coursera"] = { "palabraClave": 'coursera',
                                     "inicioNombre": 'ofrecido a través de Courseracompletó con éxito' ,
                                     "finalNombre": 'Coursera confirmó la identidad de esta persona',
                                     "inicioCertificado" :'completó con exito',
                                     "finalCertificado": 'un proyecto en línea sin crédito académico autorizado por Coursera'}
     
-    formatos_cursos["udemy"] = { "palabraClave": 'Udemy',
+    formatos_cursos["Udemy"] = { "palabraClave": 'Udemy',
                                     "inicioNombre": -84,
                                     "finalNombre": 'Fecha',
                                     "inicioFecha" : 'Fecha ', "finalFecha" : 'Longitud',
@@ -152,7 +152,7 @@ def aprobar_pdf(fecha ,fechaLimite , certificado):
 
 def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     
-    if plataforma == "coursera":
+    if plataforma == "Coursera":
         certificado, nombre, fechaSinFormato  = coursera_Parametros(texto_pag)
         
     else:
@@ -170,7 +170,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
                             formatos_cursos[plataforma]["finalFecha"])
     
     
-    if plataforma=="ssff": fechaSinFormato = fechaSinFormato + texto_pag[-1]
+    if plataforma=="SucessFactors": fechaSinFormato = fechaSinFormato + texto_pag[-1]
 
     fechaConFormato = formatearFecha(fechaSinFormato, plataforma)
 
@@ -181,7 +181,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
 
     aprobado = aprobar_pdf(fechaConFormato, fechaLimite, certificado)
 
-    talentos_plataforma = {"ssff":5, "carso": 10, "uclaro": 5, "coursera":20, "udemy":20}
+    talentos_plataforma = {"SucessFactors":5, "Capacitate Carso": 10, "uclaro": 5, "Coursera":20, "Udemy":20}
 
     if aprobado: 
         talentos = talentos_plataforma[plataforma]
@@ -201,11 +201,19 @@ def buscar_en_pdf(texto_pag, inicio, final):
 
     return texto_pag[index_inicio:index_final]
 
+
+def limpiar_fecha(fechaConFormato):
+    if "\n" in fechaConFormato  :
+        index = fechaConFormato.find("\n") + len("\n") 
+        fechaConFormato = fechaConFormato[index:]
+    return fechaConFormato
+
 def formatearFecha(fechaSinFormato, plataforma):
+    # Definir patrón de expresión regular
     # print("fecha sin formato: ",fechaSinFormato)
     try:
         ##en caso de ser carso, convierte texto a fecha
-        if(plataforma == "carso"): 
+        if(plataforma == "Capacitate Carso"): 
             # Establecer el idioma en español
             locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
             # Fecha en formato string
@@ -213,7 +221,8 @@ def formatearFecha(fechaSinFormato, plataforma):
             # Convertir a objeto date
             fechaConFormato = datetime.datetime.strptime(fecha, '%d de %B del %Y').date()
             fechaConFormato = fechaConFormato.strftime("%d/%m/%Y")
-        elif(plataforma == "udemy"): 
+            
+        elif(plataforma == "Udemy"): 
             # Establecer el idioma en español
             locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
             # Fecha en formato string
@@ -227,13 +236,14 @@ def formatearFecha(fechaSinFormato, plataforma):
             ##en caso de cualquier otra plataforma solo formatea la fecha
             fecha = parse(fechaSinFormato, dayfirst=True)
             fechaConFormato = fecha.strftime("%d/%m/%Y")
-        
+    
     except:
         ##en caso de error, es porque la fecha no tiene formato valido
-        print("problema formateando la fecha")
+        #print("problema formateando la fecha")
         fechaConFormato = fechaSinFormato
         
     
+    fechaConFormato = limpiar_fecha(fechaConFormato)
     return fechaConFormato
 
 
@@ -242,13 +252,26 @@ if __name__ == '__main__':
     # dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="0bcd509a-1663-48f2-89fa-07ccc1dcc0fb.pdf"
+    pdf ="28c4f662-5171-49b3-916e-07faaf351268.pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
     print(nombre)
     print(certificado)
     print(fecha)
-    # print(plataforma)
     print(aprobado)
+
+    # texto = " 125/12/2000"
+    # # Definir patrón de expresión regula
+    # patron = r'\d+/\d+/\d+'
+
+    # # Buscar todas las ocurrencias del patrón en el texto
+    # resultados = str(re.findall(patron, texto))
+    # StrR = str(resultados[2:-2])
+    # print((resultados))
+    # Imprimir los resultados
+
+
+    
+
     # print(talentos)
     # print(nombre, certificado, fecha, plataforma, aprobado, talentos)
