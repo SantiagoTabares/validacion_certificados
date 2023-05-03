@@ -4,7 +4,7 @@ import datetime
 import locale
 import lectorImagenes
 from dateutil.parser import parse
-
+from unidecode import unidecode
 import time
 # # Abrir el archivo PDF en modo lectura binaria
 # archivo_pdf = open("..\ejemUClaro.pdf", 'rb')  
@@ -134,15 +134,22 @@ def aprobar_pdf(fecha ,fechaLimite , certificado):
                         'Programa SSTA 2022', 'CURSOS UCC', 'Curso ET', 
                         'Reinducción 2023', 'Código de Conducta Local - Comcel', 'Experiencia al Colaborador ', 'Plan Maestro',
                         'Agilidad 2.0', 'Decálogo del Líder Ágil' , 'Comunicar es la Onda',#Angely
-                        'Código de Etica America movil',"Introduccion a la seguridad de la información", "Prevencion lavado de dinero", 
+                        'Código de Etica America movil',"Introduccion a la seguridad de la información", "Prevención lavado de dinero", 
                         "Control efectivo de la corrupción- america latina", "Reinduccion2023", "sagrilaft", "Oea- operador economico autorizado", "Igualdad y equidad de genero-convivencia saludable", 
                         "Programa ssta", "Politica no alcohol,drogas y tabaco ", "Tu te cuidas, nosotros te cuidamos-Pandemia coronavirus", "Ley de proteccion de datos", "Seguridad de la información",
                         "Programa SSTA", "Convivencia saludable", "Codigo de conducta", "Introduccion a la seguridad de la información 2021", "Protección de datos personales en America movil", 
-                        "Introduccion a la seguridad de la información 2022"]
+                        "Introduccion a la seguridad de la información 2022", "Código de Etica America movil", "Introduccion a la seguridad de la información ","Prevencion lavado de dinero",
+                        "Protección de datos personales en America movil","Control efectivo de la corrupción- america latina ","Reinduccion2023","agrilaft","Oea- operador economico autorizado",
+                        "Igualdad y equidad de genero-convivencia saludable","Programa ssta","Politica no alcohol,drogas y tabaco ","Tu te cuidas, nosotros te cuidamos-Pandemia coronavirus",
+                        "Ley de proteccion de datos","Seguridad de la información","Programa SSTA","Convivencia saludable","Codigo de conducta","Introducción a la seguridad de la información 2021",
+                        "Protección de datos personales en America movil","Introduccion a la seguridad de la información 2022", "Certificación SAGRILAFT", "SAGRILAFT", "RANSOMWAR"]    
     
+    for i in range(len(cursos_obligatorios)):
+        cursos_obligatorios[i] = unidecode(cursos_obligatorios[i].lower())
+
     fecha = time.strptime(fecha, "%d/%m/%Y")
     if fecha > fechaLimite:
-        if(certificado not in cursos_obligatorios ):
+        if(unidecode(certificado.lower()) not in cursos_obligatorios ):
             return True
         else:
             return False
@@ -252,14 +259,14 @@ if __name__ == '__main__':
     # dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="28c4f662-5171-49b3-916e-07faaf351268.pdf"
+    pdf ="066ea52d-45ec-4dce-8492-baa48d7241a2.pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
     print(nombre)
     print(certificado)
     print(fecha)
     print(aprobado)
-
+    print(plataforma)
     # texto = " 125/12/2000"
     # # Definir patrón de expresión regula
     # patron = r'\d+/\d+/\d+'

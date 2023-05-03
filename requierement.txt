@@ -11,3 +11,4 @@ pytesseract
 Pillow
 tesseract
 pdf2image
+unidecode
