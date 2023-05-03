@@ -9,7 +9,7 @@ def PdfImagenATexto(direccion_pdf):
     pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
    
     ##crear ruta para guardar y leer la imagen
-    ruta_carpeta_imagen = "G:\\Mi unidad\\TRABAJO\\Claro\\certificadosClasificador\\validacion_certificados\\pdfs_convertido_imagenes\\"
+    ruta_carpeta_imagen = "pdfs_convertido_imagenes\\"
     nombre_imagen = os.path.basename(direccion_pdf).split('.')[0]
     direccion_imagen = ruta_carpeta_imagen + nombre_imagen + '.jpeg'
    

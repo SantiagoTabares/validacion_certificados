@@ -5,7 +5,6 @@ import locale
 import lectorImagenes
 from dateutil.parser import parse
 
-
 # # Abrir el archivo PDF en modo lectura binaria
 # archivo_pdf = open("..\ejemUClaro.pdf", 'rb')  
 
@@ -32,11 +31,11 @@ def extraer_informacion(dir_pdf):
                                 "finalCertificado"  : 'presentando a la '}
     
     formatos_cursos["uclaro"] = {"palabraClave": 'UNIVERSIDAD CLARO certifica que',
-                                 "inicioNombre": 'UNIVERSIDAD CLARO certifica que' ,
-                                 "finalNombre": 'Ha superado cumpliendo con los requisitos académicos exigidos por el curso',
-                                 "inicioFecha" : 'finalización', "finalFecha" : -1,
-                                 "inicioCertificado" :'por el curso',
-                                 "finalCertificado": 'Fecha'}
+                                "inicioNombre": 'UNIVERSIDAD CLARO certifica que' ,
+                                "finalNombre": 'Ha superado cumpliendo con los requisitos académicos exigidos por el curso',
+                                "inicioFecha" : 'finalización', "finalFecha" : -1,
+                                "inicioCertificado" :'por el curso',
+                                "finalCertificado": 'Fecha'}
     
     formatos_cursos["coursera"] = { "palabraClave": 'coursera',
                                     "inicioNombre": 'ofrecido a través de Courseracompletó con éxito' ,
@@ -44,7 +43,7 @@ def extraer_informacion(dir_pdf):
                                     "inicioCertificado" :'completó con exito',
                                     "finalCertificado": 'un proyecto en línea sin crédito académico autorizado por Coursera'}
     
-    formatos_cursos["udemy"] = { "palabraClave": 'udemy',
+    formatos_cursos["udemy"] = { "palabraClave": 'Udemy',
                                     "inicioNombre": -84,
                                     "finalNombre": 'Fecha',
                                     "inicioFecha" : 'Fecha ', "finalFecha" : 'Longitud',
@@ -55,14 +54,15 @@ def extraer_informacion(dir_pdf):
     pdf_reader = PyPDF2.PdfFileReader(archivo_pdf)
     pagina = pdf_reader.getPage(0)
     texto_pag = pagina.extractText()
-    # print(texto_pag)
+    print(texto_pag)
+    print(texto_pag[-10:-1]+texto_pag[-1])
     
     ##Identifica si del pdf leyó algo
     if texto_pag.strip() == "":
-       #El string está vacío o está compuesto sólo por espacios, es probable que sea una imagen
-        print("imagen")
+        #El string está vacío o está compuesto sólo por espacios, es probable que sea una imagen
+        #print("imagen")
         texto_pag = lectorImagenes.PdfImagenATexto(dir_pdf)
-        print(texto_pag)
+        #print(texto_pag)
     
     plataforma = "sin identificar"
     
@@ -138,7 +138,7 @@ def aprobar_pdf(fecha ,fechaLimite , certificado):
     fecha_aceptada = fechaLimite < fecha
     return fecha_aceptada and certificado not in  cursos_obligatorios
 
-    
+
 
 def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     
@@ -160,7 +160,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
                             formatos_cursos[plataforma]["finalFecha"])
     
     
-    
+    print(fechaSinFormato)
     fechaConFormato = formatearFecha(fechaSinFormato, plataforma)
 
     fechaLimite = parse("01/04/2022", dayfirst=True)
@@ -190,7 +190,7 @@ def buscar_en_pdf(texto_pag, inicio, final):
     return texto_pag[index_inicio:index_final]
 
 def formatearFecha(fechaSinFormato, plataforma):
-    print("fecha sin formato: " + fechaSinFormato)
+    #print("fecha sin formato: " + fechaSinFormato)
     try:
         ##en caso de ser carso, convierte texto a fecha
         if(plataforma == "carso"): 
@@ -201,17 +201,16 @@ def formatearFecha(fechaSinFormato, plataforma):
             # Convertir a objeto date
             fechaConFormato = datetime.datetime.strptime(fecha, '%d de %B del %Y').date()
             fechaConFormato = fechaConFormato.strftime("%d/%m/%Y")
-        
-        if(plataforma == "udemy"): 
+        elif(plataforma == "udemy"): 
             # Establecer el idioma en español
             locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
             # Fecha en formato string
             fecha = fechaSinFormato.strip()
+            
             # Convertir a objeto date
             fechaConFormato = datetime.datetime.strptime(fecha, '%d de %B de %Y').date()
             fechaConFormato = fechaConFormato.strftime("%d/%m/%Y")
             
-             
         else:
             ##en caso de cualquier otra plataforma solo formatea la fecha
             fecha = parse(fechaSinFormato, dayfirst=True)
@@ -221,51 +220,23 @@ def formatearFecha(fechaSinFormato, plataforma):
         ##en caso de error, es porque la fecha no tiene formato valido
         print("problema formateando la fecha")
         fechaConFormato = fechaSinFormato
+        
     
     return fechaConFormato
 
 
 if __name__ == '__main__':    
-    # dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
-    dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
+    dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
+    # dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="d7d99331-eb70-449d-a24d-c265522eb429.pdf"
+    pdf ="0019d673-4cbe-4d09-a875-2899f5354dcc.pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
-    print(nombre, certificado, fecha, plataforma, aprobado, talentos)
+    #print(nombre)
+    #print(certificado)
+    print(fecha)
+    # print(plataforma)
+    # print(aprobado)
+    # print(talentos)
     # print(nombre, certificado, fecha, plataforma, aprobado, talentos)
-
-
-
-
-    # # Crear un objeto de la clase PdfFileReader 
-    # pdf_reader = PyPDF2.PdfFileReader(archivo_pdf)
-    # # Recorrer todas las páginas del PDF
-    # # Obtener la página actual
-    # pagina = pdf_reader.getPage(0)
-    # # Imprimir el contenido de la página
-    # texto_pag = pagina.extractText()
-    # print(texto_pag)
-    # fecha_encontrada = re.findall(reg_ex, texto_pag)
-    # # Si se encuentra una fecha, imprimir en la consola
-    # if fecha_encontrada:
-    #     print('La fecha es:', fecha_encontrada[0])
-    # else:
-    #     print("No hay")
-    # if iden_ssff in texto_pag:
-    #     print("Es SSFF")
-    #     a, b, c = SSFF(texto_pag)
-    #     print(a, b, c)
-    # elif iden_carso in texto_pag :
-    #     print("Es CARSO")
-    #     a, b, c = CARSO(texto_pag)
-    #     print(a, b, c)
-    # elif iden_uclaro in texto_pag :
-    #     print("Es Universidad Claro")
-    #     a, b, c = UCLARO(texto_pag)
-    #     print(a, b, c)
-    # elif iden_coursera in texto_pag :
-    #     print("Es Coursera")
-    # else:
-    #     print("Es Otro")
