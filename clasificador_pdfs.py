@@ -6,6 +6,9 @@ import lectorImagenes
 from dateutil.parser import parse
 from unidecode import unidecode
 import time
+import os
+import shutil
+
 # # Abrir el archivo PDF en modo lectura binaria
 # archivo_pdf = open("..\ejemUClaro.pdf", 'rb')  
 
@@ -72,59 +75,54 @@ def extraer_informacion(dir_pdf):
     
     ##una vez se extrae y valida la plataforma, se busca los parametros
     if plataforma == "sin identificar" :
-        print("este certificado no cumple con los requisitos")
+        print("sin identificar")
+        savepdf(dir_pdf)
         nombre, certificado, fecha, aprobado, talentos = None,None,None,None,None
     else:
         nombre, certificado, fecha, aprobado, talentos = buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos)
     
     return nombre, certificado, fecha, plataforma, aprobado, talentos
 
+import os
+import shutil
+def savepdf(dir_pdf):
+    
+    try:
+        ##ruta destino
+        ruta_carpeta_pdf_sin_identificar = "G:\\Mi unidad\\TRABAJO\\Claro\\certificadosClasificador\\validacion_certificados\\pdfs_sin_identificar\\"
+        ##ruta origen 
+        ruta_carpeta_origen, nombre_pdf = os.path.split(dir_pdf)
+        
+        src = os.path.join(ruta_carpeta_origen, nombre_pdf ) # origen
+        dst = os.path.join(ruta_carpeta_pdf_sin_identificar, nombre_pdf) # destino
+        
+        shutil.copy(src, dst)
+        
+    except Exception as e:
+        print("error al copiar archivo: ")
+        print(e)
+        
+
+    
 
 def coursera_Parametros(texto):
     
-    posicion = len(texto) - 1  # empezamos desde la última posición del string
-    contador = 0
-    posiciones = {}
-    cantidadSaltos = 0
+    # Definir patrón de búsqueda para fechas con formato mmm dd, aaaa
+    patron = r'\b\w{3}\s+\d{1,2},\s+\d{4}\b'
 
-    while posicion >= 0:
-        
-        if texto[posicion] == "\n":
-            contador += 1
-            if contador == 2:
-                cantidadSaltos += 1
-                posicionFinal = posicion
-                posiciones[cantidadSaltos] = {"fin": posicionInicio, "inicio":posicionFinal}
-                contador = 0
-            else:
-                posicionInicio = posicion
-                
-        posicion -= 1
+    # Buscar la fecha en el texto usando el patrón de búsqueda
+    fecha_encontrada = re.search(patron, texto)
 
-    ##agregar últimas posiciones
-    ultimaposicion = texto[:posicionFinal].find("\n")
-    cantidadSaltos += 1 
-    posiciones[cantidadSaltos] = {"fin" : posicionFinal, "inicio": ultimaposicion}
-    cantidadSaltos += 1 
-    posiciones[cantidadSaltos] = {"fin" : ultimaposicion, "inicio": 0}
-
-    meses = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
-
-    for indice in posiciones:
-        fecha = texto[posiciones[indice]["inicio"]:posiciones[indice]["fin"]]
-        if indice-2>0: 
-            nombre= texto[posiciones[indice-2]["inicio"]:posiciones[indice-2]["fin"]]
-        if indice-3>0: 
-            curso = texto[posiciones[indice-3]["inicio"]:posiciones[indice-3]["fin"]]
-
-
-        for mes in meses:
-            if mes in fecha.lower():
-                fecha1 = fecha.strip()
-                nombre1 = nombre.strip()
-                curso1 = curso.strip()
-                break
-    return curso1, nombre1, fecha1
+    # Si se encontró una fecha, convertirla al formato dd/mm/aaaa
+    if fecha_encontrada:
+    # Convertir la fecha encontrada a un objeto datetime
+        fecha_datetime = datetime.datetime.strptime(fecha_encontrada.group(), '%b %d, %Y')
+        fecha_formateada = fecha_datetime.strftime('%d/%m/%Y')
+    else:
+        fecha_formateada = None
+        print("problema al formatear fecha")
+    
+    return None, None, fecha_formateada
     
 
 def aprobar_pdf(fecha ,fechaLimite , certificado):
@@ -176,6 +174,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
         fechaSinFormato = buscar_en_pdf(texto_pag, formatos_cursos[plataforma]["inicioFecha"],
                             formatos_cursos[plataforma]["finalFecha"])
     
+        fechaConFormato = formatearFecha(fechaSinFormato, plataforma)
     
     if plataforma=="SucessFactors": fechaSinFormato = fechaSinFormato + texto_pag[-1]
 
@@ -216,8 +215,7 @@ def limpiar_fecha(fechaConFormato):
     return fechaConFormato
 
 def formatearFecha(fechaSinFormato, plataforma):
-    # Definir patrón de expresión regular
-    # print("fecha sin formato: ",fechaSinFormato)
+    
     try:
         ##en caso de ser carso, convierte texto a fecha
         if(plataforma == "Capacitate Carso"): 
@@ -252,6 +250,7 @@ def formatearFecha(fechaSinFormato, plataforma):
     
     fechaConFormato = limpiar_fecha(fechaConFormato)
     return fechaConFormato
+    
 
 
 if __name__ == '__main__':    
