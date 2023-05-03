@@ -27,14 +27,15 @@ for archivo in os.listdir(directorio):
     ##valida que el archivo existe
     if os.path.isfile(ruta_archivo):
         var+=1
-        if var==50:break
+        if var==200:break
         try:
             ##se valida si hay algún archivo repetido
             if (not df['id_pdf'].isin([archivo]).any()):
                 ##se extrae la información del certificado
                 nombre, certificado, fecha, plataforma, aprobado, talentos = clasificador_pdfs.extraer_informacion("{}/{}".format(directorio,archivo))
                 ##se crea un nuevo registro a partir de la información
-                nuevo_valor = pd.DataFrame({"id_pdf":[archivo], "empleado":[nombre],"certificado":[certificado],
+                archivo_subir = "certificates/"+archivo
+                nuevo_valor = pd.DataFrame({"id_pdf":[archivo_subir], "empleado":[nombre],"certificado":[certificado],
                                             "fecha":[fecha], "plataforma":[plataforma], "aprobado":[aprobado], "talentos":[talentos]})
                 ##se guarda el registro en el objeto df
                 df = pd.concat([df,nuevo_valor] )    

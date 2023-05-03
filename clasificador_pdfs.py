@@ -1,10 +1,11 @@
 import PyPDF2
 import re
-import datetime
+import datetime 
 import locale
 import lectorImagenes
 from dateutil.parser import parse
 
+import time
 # # Abrir el archivo PDF en modo lectura binaria
 # archivo_pdf = open("..\ejemUClaro.pdf", 'rb')  
 
@@ -54,8 +55,7 @@ def extraer_informacion(dir_pdf):
     pdf_reader = PyPDF2.PdfFileReader(archivo_pdf)
     pagina = pdf_reader.getPage(0)
     texto_pag = pagina.extractText()
-    print(texto_pag)
-    print(texto_pag[-10:-1]+texto_pag[-1])
+    
     
     ##Identifica si del pdf leyó algo
     if texto_pag.strip() == "":
@@ -133,11 +133,21 @@ def aprobar_pdf(fecha ,fechaLimite , certificado):
                         'Introducción a la Seguridad de la Información 2022 - Carso', 'Agilidad', 'Igualdad y Equidad de Género', 'Curso UCC','Curso ET',
                         'Programa SSTA 2022', 'CURSOS UCC', 'Curso ET', 
                         'Reinducción 2023', 'Código de Conducta Local - Comcel', 'Experiencia al Colaborador ', 'Plan Maestro',
-                        'Agilidad 2.0', 'Decálogo del Líder Ágil' , 'Comunicar es la Onda']
+                        'Agilidad 2.0', 'Decálogo del Líder Ágil' , 'Comunicar es la Onda',#Angely
+                        'Código de Etica America movil',"Introduccion a la seguridad de la información", "Prevencion lavado de dinero", 
+                        "Control efectivo de la corrupción- america latina", "Reinduccion2023", "sagrilaft", "Oea- operador economico autorizado", "Igualdad y equidad de genero-convivencia saludable", 
+                        "Programa ssta", "Politica no alcohol,drogas y tabaco ", "Tu te cuidas, nosotros te cuidamos-Pandemia coronavirus", "Ley de proteccion de datos", "Seguridad de la información",
+                        "Programa SSTA", "Convivencia saludable", "Codigo de conducta", "Introduccion a la seguridad de la información 2021", "Protección de datos personales en America movil", 
+                        "Introduccion a la seguridad de la información 2022"]
     
-    fecha_aceptada = fechaLimite < fecha
-    return fecha_aceptada and certificado not in  cursos_obligatorios
-
+    fecha = time.strptime(fecha, "%d/%m/%Y")
+    if fecha > fechaLimite:
+        if(certificado not in cursos_obligatorios ):
+            return True
+        else:
+            return False
+    else:
+        return False
 
 
 def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
@@ -160,13 +170,15 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
                             formatos_cursos[plataforma]["finalFecha"])
     
     
-    print(fechaSinFormato)
+    if plataforma=="ssff": fechaSinFormato = fechaSinFormato + texto_pag[-1]
+
     fechaConFormato = formatearFecha(fechaSinFormato, plataforma)
 
-    fechaLimite = parse("01/04/2022", dayfirst=True)
-    fechaLimite = fechaLimite.strftime("%d/%m/%Y")
+    # fechaLimite = parse("01/04/2022", dayfirst=True)
+    # fechaLimite = fechaLimite.strftime("%d/%m/%Y")
+    fechaLimite = "01/04/2022"
+    fechaLimite =  time.strptime(fechaLimite, "%d/%m/%Y")
 
-    
     aprobado = aprobar_pdf(fechaConFormato, fechaLimite, certificado)
 
     talentos_plataforma = {"ssff":5, "carso": 10, "uclaro": 5, "coursera":20, "udemy":20}
@@ -190,7 +202,7 @@ def buscar_en_pdf(texto_pag, inicio, final):
     return texto_pag[index_inicio:index_final]
 
 def formatearFecha(fechaSinFormato, plataforma):
-    #print("fecha sin formato: " + fechaSinFormato)
+    # print("fecha sin formato: ",fechaSinFormato)
     try:
         ##en caso de ser carso, convierte texto a fecha
         if(plataforma == "carso"): 
@@ -230,13 +242,13 @@ if __name__ == '__main__':
     # dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="0019d673-4cbe-4d09-a875-2899f5354dcc.pdf"
+    pdf ="0bcd509a-1663-48f2-89fa-07ccc1dcc0fb.pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
-    #print(nombre)
-    #print(certificado)
+    print(nombre)
+    print(certificado)
     print(fecha)
     # print(plataforma)
-    # print(aprobado)
+    print(aprobado)
     # print(talentos)
     # print(nombre, certificado, fecha, plataforma, aprobado, talentos)
