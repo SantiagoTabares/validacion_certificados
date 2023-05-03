@@ -26,8 +26,8 @@ for archivo in os.listdir(directorio):
     ruta_archivo = os.path.join(directorio, archivo) 
     ##valida que el archivo existe
     if os.path.isfile(ruta_archivo):
-        var+=1
-        if var ==100: break
+        # var+=1
+        # if var ==100: break
         try:
             ##se valida si hay algún archivo repetido
             if (not df['id_pdf'].isin([archivo]).any()):

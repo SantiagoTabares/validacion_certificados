@@ -12,3 +12,5 @@ Pillow
 tesseract
 pdf2image
 unidecode
+shutil
+os
