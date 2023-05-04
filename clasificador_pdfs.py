@@ -8,6 +8,7 @@ from unidecode import unidecode
 import time
 import os
 import shutil
+import difflib
 
 # # Abrir el archivo PDF en modo lectura binaria
 # archivo_pdf = open("..\ejemUClaro.pdf", 'rb')  
@@ -74,7 +75,7 @@ def extraer_informacion(dir_pdf):
         if valor["palabraClave"] in texto_pag: plataforma = clave
     
     ##una vez se extrae y valida la plataforma, se busca los parametros
-    if plataforma == "sin identificar" :
+    if plataforma == "sin identificar" or plataforma == "Coursera" :
         print("sin identificar")
         savepdf(dir_pdf)
         nombre, certificado, fecha, aprobado, talentos = None,None,None,None,None
@@ -140,19 +141,29 @@ def aprobar_pdf(fecha ,fechaLimite , certificado):
                         "Protección de datos personales en America movil","Control efectivo de la corrupción- america latina ","Reinduccion2023","agrilaft","Oea- operador economico autorizado",
                         "Igualdad y equidad de genero-convivencia saludable","Programa ssta","Politica no alcohol,drogas y tabaco ","Tu te cuidas, nosotros te cuidamos-Pandemia coronavirus",
                         "Ley de proteccion de datos","Seguridad de la información","Programa SSTA","Convivencia saludable","Codigo de conducta","Introducción a la seguridad de la información 2021",
-                        "Protección de datos personales en America movil","Introduccion a la seguridad de la información 2022", "Certificación SAGRILAFT", "SAGRILAFT", "RANSOMWAR"]    
+                        "Protección de datos personales en America movil","Introduccion a la seguridad de la información 2022", "Certificación SAGRILAFT", "SAGRILAFT", "RANSOMWAR", 
+                        "Certificación Q2 Coor - El feedback y las conversaciones poderosas.","Q2 Junio Int y Esp - Marketing Experiencial y Valor Agregad",
+                        "Certificación Q2 App - Desarrollar estrategias para ir de la simpatía a la empatía con clientes difíciles y para promover la retención",
+                        "Certificación Q2 Consultor ESP-INT Técnicas de Persuasión para apalancar el valor agregado", "SUP Q2 JUNIO - Mi rol como coequipero de un equipo de alto desempeñ", 
+                        "Entrenamiento Poderoso Q2 Abril: Revolución industrial 4." ]    
+    
+    esta_en_obligarorio = False
     
     for i in range(len(cursos_obligatorios)):
-        cursos_obligatorios[i] = unidecode(cursos_obligatorios[i].lower())
-
+        #print(cursos_obligatorios[i].lower())
+        similarity = difflib.SequenceMatcher(None, cursos_obligatorios[i].lower(), certificado.lower()).ratio()
+        # print((similarity))
+        
+        if (similarity>0.7):
+            print(similarity)
+            esta_en_obligarorio = True
+            break
     fecha = time.strptime(fecha, "%d/%m/%Y")
-    if fecha > fechaLimite:
-        if(unidecode(certificado.lower()) not in cursos_obligatorios ):
-            return True
-        else:
-            return False
-    else:
+    
+    if fecha < fechaLimite or esta_en_obligarorio :
         return False
+    else:
+        return True
 
 
 def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
@@ -258,7 +269,7 @@ if __name__ == '__main__':
     # dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="066ea52d-45ec-4dce-8492-baa48d7241a2.pdf"
+    pdf ="00c9a82e-f915-46a0-8323-6bcc9a73eb13.pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
     print(nombre)

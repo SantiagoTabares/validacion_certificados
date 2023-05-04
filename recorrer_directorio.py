@@ -3,7 +3,7 @@ import pandas as pd
 import clasificador_pdfs
 
 # Comprobar si el archivo ya existe
-if os.path.isfile("certificados_validados.xlsx"):
+if os.path.isfile("certificados_validados.xlsx"): 
     df = pd.read_excel("certificados_validados.xlsx")
     
 else:
@@ -26,19 +26,20 @@ for archivo in os.listdir(directorio):
     ruta_archivo = os.path.join(directorio, archivo) 
     ##valida que el archivo existe
     if os.path.isfile(ruta_archivo):
-        # var+=1
-        # if var ==100: break
+        var+=1
+        if var ==20: break
         try:
             ##se valida si hay algún archivo repetido
             if (not df['id_pdf'].isin([archivo]).any()):
                 ##se extrae la información del certificado
                 nombre, certificado, fecha, plataforma, aprobado, talentos = clasificador_pdfs.extraer_informacion("{}/{}".format(directorio,archivo))
                 ##se crea un nuevo registro a partir de la información
-                archivo_subir = "certificates/"+archivo
-                nuevo_valor = pd.DataFrame({"id_pdf":[archivo_subir], "empleado":[nombre],"certificado":[certificado],
-                                            "fecha":[fecha], "plataforma":[plataforma], "aprobado":[aprobado], "talentos":[talentos]})
-                ##se guarda el registro en el objeto df
-                df = pd.concat([df,nuevo_valor] )    
+                if (nombre != None and certificado != None):
+                    archivo_subir = "certificates/"+archivo
+                    nuevo_valor = pd.DataFrame({"id_pdf":[archivo_subir], "empleado":[nombre],"certificado":[certificado],
+                                                "fecha":[fecha], "plataforma":[plataforma], "aprobado":[aprobado], "talentos":[talentos]})
+                    ##se guarda el registro en el objeto df
+                    df = pd.concat([df,nuevo_valor] )    
                 
         except Exception as e:
             print("\n Se ha producido un error:", e)       
