@@ -11,23 +11,31 @@ else:
     df = pd.DataFrame(columns=["id_pdf", "empleado","certificado", "fecha", "plataforma", "aprobado", "talentos"])
     df.to_excel("certificados_validados.xlsx", index=False)
     print("Se ha creado el archivo 'certificados_validados.xlsx'.")
+
+# Comprobar si el archivo ya existe
+if os.path.isfile("certificados_no_validados.xlsx"): 
+    df2 = pd.read_excel("certificados_no_validados.xlsx")
     
+else:
+    # Si no existe, crear el archivo
+    df2 = pd.DataFrame(columns=["id_pdf", "empleado","certificado", "fecha", "plataforma", "aprobado", "talentos"])
+    df2.to_excel("certificados_no_validados.xlsx", index=False)
+    print("Se ha creado el archivo 'certificados_no_validados.xlsx'.")
 
 #directorio = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro"  # Directorio Miguel
 directorio = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"           # Directorio Santigo
 lis = []
 var =0
-listaDocumentosRaros = [];
+listaDocumentosRaros = []
 
 ## se recorre cada archivo en la carpeta del directorio
 for archivo in os.listdir(directorio):
-    
+    var+=1
+    if var==50: break
     ##genera la ruta completa del archivo
     ruta_archivo = os.path.join(directorio, archivo) 
     ##valida que el archivo existe
     if os.path.isfile(ruta_archivo):
-        var+=1
-        if var ==20: break
         try:
             ##se valida si hay algún archivo repetido
             if (not df['id_pdf'].isin([archivo]).any()):
@@ -39,14 +47,27 @@ for archivo in os.listdir(directorio):
                     nuevo_valor = pd.DataFrame({"id_pdf":[archivo_subir], "empleado":[nombre],"certificado":[certificado],
                                                 "fecha":[fecha], "plataforma":[plataforma], "aprobado":[aprobado], "talentos":[talentos]})
                     ##se guarda el registro en el objeto df
-                    df = pd.concat([df,nuevo_valor] )    
+                    df = pd.concat([df,nuevo_valor] )  
+                else:
+                    archivo_subir = "certificates/"+archivo
+                    nuevo_valor = pd.DataFrame({"id_pdf":[archivo_subir], "empleado":[nombre],"certificado":[certificado],
+                                                "fecha":[fecha], "plataforma":[plataforma], "aprobado":[aprobado], "talentos":[talentos]})
+                    ##se guarda el registro en el objeto df
+                    df2 = pd.concat([df2,nuevo_valor] )
+
                 
         except Exception as e:
-            print("\n Se ha producido un error:", e)       
-            print("\n problema de lectura con el archivo: ",ruta_archivo)
+            #print("\n Se ha producido un error:", e)       
+            #print("\n problema de lectura con el archivo: ",ruta_archivo)
             listaDocumentosRaros.append(ruta_archivo)
+            archivo_subir = "certificates/"+archivo
+            nuevo_valor = pd.DataFrame({"id_pdf":[archivo_subir], "empleado":[None],"certificado":[None],
+                                        "fecha":[None], "plataforma":["sin identificar"], "aprobado":[None], "talentos":[None]})
+            ##se guarda el registro en el objeto df
+            df2 = pd.concat([df2,nuevo_valor] )
                         
 df.to_excel("certificados_validados.xlsx", index=False)
+df2.to_excel("certificados_no_validados.xlsx", index=False)
 
 
 # Abrir un archivo en modo escritura ('w')

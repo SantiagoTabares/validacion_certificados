@@ -90,7 +90,7 @@ def savepdf(dir_pdf):
     
     try:
         ##ruta destino
-        ruta_carpeta_pdf_sin_identificar = "G:\\Mi unidad\\TRABAJO\\Claro\\certificadosClasificador\\validacion_certificados\\pdfs_sin_identificar\\"
+        ruta_carpeta_pdf_sin_identificar = "pdfs_sin_identificar\\"
         ##ruta origen 
         ruta_carpeta_origen, nombre_pdf = os.path.split(dir_pdf)
         
@@ -154,8 +154,8 @@ def aprobar_pdf(fecha ,fechaLimite , certificado):
         similarity = difflib.SequenceMatcher(None, cursos_obligatorios[i].lower(), certificado.lower()).ratio()
         # print((similarity))
         
-        if (similarity>0.7):
-            print(similarity)
+        if (similarity>0.75):
+            #print(similarity)
             esta_en_obligarorio = True
             break
     fecha = time.strptime(fecha, "%d/%m/%Y")
