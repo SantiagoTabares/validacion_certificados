@@ -42,6 +42,13 @@ def extraer_informacion(dir_pdf):
                                 "inicioCertificado" :'por el curso',
                                 "finalCertificado": 'Fecha'}
     
+    formatos_cursos["uclaro2"] = {"palabraClave": 'UNIVERSIDAD CLARO certifica que ha superado cumpliendo con los requisitos académicos exigidos el Curso',
+                                "inicioNombre": -30,
+                                "finalNombre": 'UNIVERSIDAD CLARO certifica que',
+                                "inicioFecha" : 'acredita.', "finalFecha" : -1,
+                                "inicioCertificado" :'exigidos el Curso',
+                                "finalCertificado": 'Para que así conste'}
+    
     formatos_cursos["Coursera"] = { "palabraClave": 'coursera',
                                     "inicioNombre": 'ofrecido a través de Courseracompletó con éxito' ,
                                     "finalNombre": 'Coursera confirmó la identidad de esta persona',
@@ -198,7 +205,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
 
     aprobado = aprobar_pdf(fechaConFormato, fechaLimite, certificado)
 
-    talentos_plataforma = {"SucessFactors":5, "Capacitate Carso": 10, "uclaro": 5, "Coursera":20, "Udemy":20}
+    talentos_plataforma = {"SucessFactors":5, "Capacitate Carso": 10, "uclaro": 5, "Coursera":20, "Udemy":20, "uclaro2": 5}
 
     if aprobado: 
         talentos = talentos_plataforma[plataforma]
@@ -265,14 +272,14 @@ def formatearFecha(fechaSinFormato, plataforma):
 
 
 if __name__ == '__main__':    
-    dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
-    # dir = "C:\\Users\\migue\\OneDrive\\Documentos\\pdfscertificadosclaro" #Miguel
+    # dir = "C:\\Users\\Santiago\\Documents\\pdfscertificadosclaro"   
+    dir = "C:\\Users\\migue\\OneDrive\\Documentos\\certificadosPdfsCompletos" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="00c9a82e-f915-46a0-8323-6bcc9a73eb13.pdf"
+    pdf ="19f6bf79-8c69-4bc6-954f-248202bd429c.pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
-    print(nombre)
+    print("nombre: " + nombre)
     print(certificado)
     print(fecha)
     print(aprobado)
