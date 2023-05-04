@@ -19,7 +19,7 @@ def extraer_informacion(dir_pdf):
 
     formatos_cursos = {}
     formatos_cursos = {}
-    formatos_cursos["SucessFactors"] = { "palabraClave": 'Hace constar que',
+    formatos_cursos["SuccessFactors"] = { "palabraClave": 'Hace constar que',
                                 "inicioNombre":'Hace constar que', 
                                 "finalNombre":'ha completado el curso',
                                 "inicioFecha": -10, 
@@ -194,7 +194,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
     
         fechaConFormato = formatearFecha(fechaSinFormato, plataforma)
     
-    if plataforma=="SucessFactors": fechaSinFormato = fechaSinFormato + texto_pag[-1]
+    if plataforma=="SuccessFactors": fechaSinFormato = fechaSinFormato + texto_pag[-1]
 
     fechaConFormato = formatearFecha(fechaSinFormato, plataforma)
 
@@ -205,7 +205,7 @@ def buscarParametrosDeRegistro(plataforma, texto_pag, formatos_cursos):
 
     aprobado = aprobar_pdf(fechaConFormato, fechaLimite, certificado)
 
-    talentos_plataforma = {"SucessFactors":5, "Capacitate Carso": 10, "uclaro": 5, "Coursera":20, "Udemy":20, "uclaro2": 5}
+    talentos_plataforma = {"SuccessFactors":5, "Capacitate Carso": 10, "uclaro": 5, "Coursera":20, "Udemy":20, "uclaro2": 5}
 
     if aprobado: 
         talentos = talentos_plataforma[plataforma]
@@ -276,7 +276,7 @@ if __name__ == '__main__':
     dir = "C:\\Users\\migue\\OneDrive\\Documentos\\certificadosPdfsCompletos" #Miguel
 
     # pdf ="1b441572-b707-41d0-a103-6953f6544b56.pdf" #coursera
-    pdf ="19f6bf79-8c69-4bc6-954f-248202bd429c.pdf"
+    pdf =".pdf"
 
     nombre, certificado, fecha, plataforma, aprobado, talentos =extraer_informacion("{}/{}".format(dir,pdf))
     print("nombre: " + nombre)

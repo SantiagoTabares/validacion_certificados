@@ -1,4 +1,6 @@
 import pandas as pd
+from dateutil.parser import parse
+
 # Leer el archivo de Excel
 df = pd.read_excel('certificados_validados.xlsx')
 
@@ -15,8 +17,13 @@ mensaje_rechazado ="Hola, Gracias por participar en nuestras iniciativas, recuer
 
 for i, row in df.iterrows():
     # id = row['id_pdf']
+    
     name = row['empleado']
-    date = row['fecha']
+    fechaExcel = row['fecha']
+    fecha = parse(fechaExcel, dayfirst=True)
+    date = fecha.strftime("%Y-%m-%d")  #%d/%m/%Y
+    
+            
     doc_url = row['id_pdf'] 
     approved = bool(row['aprobado'])
     points = row['talentos']
@@ -24,13 +31,15 @@ for i, row in df.iterrows():
     # employee_id = row['Employeeld']
     rejected = not row['aprobado']
     platform = row['plataforma']
+    if platform == "uclaro" or platform == "uclaro2":
+        platform = "SuccessFactors"
     if (type(name) != float):
         # Si ya existe una fila con el mismo id, actualizar los valores de la fila
         if approved:
             mensaje = mensaje_aprobado
         else:
             mensaje = mensaje_rechazado
-        query = "UPDATE certificates SET  Date ='"+ str(date)+"', Approved = "+ str(int(approved))+", Points = "+ str(points)+", Rejected = "+ str(rejected)+" , Platform = '"+ str(platform)+"' , Remarks = '"+ mensaje +"' WHERE DocumentUrl = '"+ str(doc_url)+"'"
+        query = "UPDATE certificates SET  Date ='"+ str(date)+"', Approved = "+ str(int(approved))+", Points = "+ str(points)+", Rejected = "+ str(int(rejected))+" , Platform = '"+ str(platform)+"' , Remarks = '"+ mensaje +"' WHERE DocumentUrl = '"+ str(doc_url)+"'"
 
         # Guardar la consulta en el archivo de texto
         file.write(query+ ";\n")
